@@ -1,0 +1,110 @@
+/* ---- RESET Y BASE ---- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  background-color: #f8fafc; /* Gris más suave */
+  padding: 2rem;
+  color: #1e293b;
+}
+
+.contenedor {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* ---- COMPONENTES REUTILIZABLES (Simplificación) ---- */
+.card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+/* ---- FORMULARIO ---- */
+.campo {
+  margin-bottom: 1rem;
+}
+
+.campo label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.campo input {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  transition: border 0.2s;
+}
+
+.campo input:focus {
+  outline: none;
+  border-color: #6366f1; /* Indigo */
+}
+
+/* ---- BOTONES ---- */
+.btn {
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  color: white;
+  transition: filter 0.2s;
+}
+
+.btn:hover {
+  filter: brightness(0.9);
+}
+
+.btn-azul  { background-color: #6366f1; }
+.btn-verde { background-color: #10b981; }
+.btn-rojo  { background-color: #f43f5e; }
+
+/* ---- TABLA ---- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+th {
+  background-color: #f8fafc;
+  color: #64748b;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+tr:hover {
+  background-color: #f1f5f9;
+}
+
+.badge-votos {
+  background-color: #e0e7ff;
+  color: #4338ca;
+  padding: 0.2rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}

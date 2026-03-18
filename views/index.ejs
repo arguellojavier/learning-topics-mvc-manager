@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CRUD</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div class="contenedor">
+
+    <form id="user-data" class="formulario">
+      <div class="campo">
+        <label>Tema</label>
+        <input type="text" id="subject" required>
+      </div>
+      <div class="campo">
+        <label>Link</label>
+        <input type="text" id="url" required>
+      </div>
+      <button type="submit" class="btn btn-azul">Añadir Tema</button>
+    </form>
+
+    <div class="tabla-contenedor">
+      <table>
+        <thead>
+          <tr>
+            <th>Votos</th>
+            <th>Tema</th>
+            <th>Enlace</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% records.forEach(function(record) { %>
+          <tr>
+            <td>
+              <span class="badge-votos"><%= record.votos %></span>
+            </td>
+            <td><%= record.tema %></td>
+            <td>
+              <a href="<%= record.enlace %>" target="_blank"><%= record.enlace %></a>
+            </td>
+            <td class="acciones">
+              <button class="btn-vote btn btn-verde" data-id="<%= record.id %>">+1</button>
+              <button class="btn-delete btn btn-rojo" data-id="<%= record.id %>">-1</button>
+              <button class="btn-edit btn btn-azul" data-id="<%= record.id %>">Editar</button>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script src="/js/form.js"></script>
+</body>
+</html>
