@@ -1,5 +1,5 @@
 // Carga las variables del archivo .env antes de cualquier otra cosa
-// Sin esto, process.env.PORT seria undefined
+// libreria dotenv se encarga de acceder a env
 require('dotenv').config();
 
 // Importa Express, el framework que crea el servidor web
@@ -7,17 +7,11 @@ require('dotenv').config();
 const express = require('express');
 
 // Importa path para construir rutas de carpetas de forma segura
-// Funciona igual en Windows (\ ) y Linux (/) automaticamente
 const path = require('path');
 
 // Crea la aplicacion servidor
 const app = express();
 
-// ================================================
-// CONFIGURACION DEL MOTOR DE PLANTILLAS: EJS
-// Reemplaza a Handlebars (express-handlebars)
-// EJS usa <%= variable %> en lugar de {{ variable }} de Handlebars
-// ================================================
 
 // Le dice a Express que use EJS para renderizar las vistas
 // EJS busca archivos .ejs en la carpeta 'views' por defecto

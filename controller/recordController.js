@@ -70,18 +70,11 @@ exports.addVote = async (req, res) => {
     res.json({ success: ok });
 };
 
-// ================================================
 // CONTROLADOR: removeVote
 // Maneja DELETE /records/unVote
 // Elimina un voto del registro indicado
-// ================================================
-exports.removeVote = async (req, res) => {
-
-    // record_id del boton -1 que clickeo el usuario
+exports.deleteRecord = async (req, res) => {
     const { record_id } = req.body;
-
-    // Llama al modelo para borrar un voto
-    const ok = await db.remove_vote(record_id);
-
+    const ok = await db.delete_record(record_id);
     res.json({ success: ok });
 };

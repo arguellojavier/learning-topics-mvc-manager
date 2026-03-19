@@ -21,7 +21,7 @@ router.post("/vote", controller.addVote);
 
 // DELETE /records/unVote  → quita un voto (-1)
 // Recibe { record_id } en el body y llama a controller.removeVote
-router.delete("/unVote", controller.removeVote);
+router.delete("/delete", controller.deleteRecord)
 
 // PUT /records/update  → actualiza un registro existente
 // Recibe { record_id, tema, link } en el body y llama a controller.updateRecord

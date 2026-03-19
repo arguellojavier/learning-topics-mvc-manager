@@ -69,17 +69,11 @@ async function add_vote(record_id) {
 // Parametros: record_id (number)
 // Retorna: true si se elimino un voto, false si no habia votos
 // ================================================
-async function remove_vote(record_id) {
-
-    // ctid es el identificador fisico interno de cada fila en PostgreSQL
-    // Esta tecnica selecciona UNA sola fila para borrar, ya que
-    // PostgreSQL no soporta DELETE ... LIMIT 1 como MySQL
-    // La subconsulta busca el ctid de una fila con ese record_id y borra solo esa
+async function delete_record(record_id) {
     const result = await pool.query(
-        'DELETE FROM votes WHERE ctid = (SELECT ctid FROM votes WHERE record_id=$1 LIMIT 1)',
+        'DELETE FROM record WHERE id=$1',
         [record_id]
     );
-
     return result.rowCount > 0;
 }
 
@@ -119,5 +113,5 @@ module.exports = {
     display_data,
     update_subject,
     add_vote,
-    remove_vote
+    delete_record
 };

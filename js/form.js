@@ -1,14 +1,9 @@
-// ================================================
 // form.js - Script del lado del NAVEGADOR
-// Este archivo corre en Chrome/Firefox, NO en el servidor
 // Se encarga de capturar eventos del usuario y comunicarse
 // con el servidor usando fetch() sin recargar la pagina
-// ================================================
 
-// ------------------------------------------------
 // SECCION 1: AGREGAR NUEVO TEMA
 // Escucha el submit del formulario y manda los datos al servidor
-// ------------------------------------------------
 
 // Selecciona el formulario por su id="user-data" definido en index.ejs
 const data = document.getElementById("user-data");
@@ -117,24 +112,17 @@ voteButtons.forEach((button) => {
   });
 });
 
-// ------------------------------------------------
 // SECCION 4: QUITAR VOTO (-1)
 // Escucha el click en los botones rojos "-1" de cada fila
-// ------------------------------------------------
 
 // Selecciona todos los botones con clase .btn-delete (uno por cada fila)
-const unVoteButtons = document.querySelectorAll(".btn-delete");
-
-unVoteButtons.forEach((button) => {
+const deleteButtons = document.querySelectorAll(".btn-delete");
+deleteButtons.forEach((button) => {
   button.addEventListener("click", async () => {
-
-    // Lee el id del registro
     const record_id = button.getAttribute("data-id");
 
-    // Manda DELETE /records/unVote con el id del registro
-    // DELETE se usa por convencion para eliminar datos
-    // El servidor borra UNA fila de votes para ese record_id
-    await fetch("/records/unVote", {
+
+    await fetch("/records/delete", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ record_id }),
