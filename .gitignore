@@ -1,0 +1,10 @@
+# Entorno y Secretos
+.env
+
+# Dependencias de Node (pesan mucho y no se suben)
+node_modules/
+
+# Archivos temporales de Windows o editores
+.DS_Store
+dist/
+build/
