@@ -3,40 +3,38 @@
 const pool = require('./db');
 
 // ================================================
-// FUNCION: add_subject
-// Inserta un nuevo tema con su enlace en la tabla record
+// FUNCION: agregarTema
+// Inserta un nuevo tema con su enlace en la tabla tema
 // Parametros: tema (string), enlace (string)
 // Retorna: true si se inserto correctamente, false si fallo
-// ================================================
-async function add_subject(tema, enlace) {
+async function agregarTema(tema, enlace) {
 
-    // Ejecuta el INSERT en la tabla record
+    // Ejecuta el INSERT en la tabla tema
     // $1 y $2 son parametros seguros que evitan SQL injection
     // En MySQL se usan '?' pero en PostgreSQL se usan '$1', '$2', etc.
     const result = await pool.query(
-        'INSERT INTO record (tema, enlace) VALUES ($1, $2)',
+        'INSERT INTO tema (tema, enlace) VALUES ($1, $2)',
         [tema, enlace]
     );
 
     // rowCount es el numero de filas afectadas por el INSERT
     // Si es mayor a 0 significa que se inserto correctamente
-    // En MySQL era 'affectedRows', en PostgreSQL es 'rowCount'
     return result.rowCount > 0;
 }
 
 // ================================================
-// FUNCION: update_subject
+// FUNCION: actualizarTema
 // Actualiza el tema y enlace de un registro existente
-// Parametros: record_id (number), tema (string), enlace (string)
+// Parametros: tema_id (number), tema (string), enlace (string)
 // Retorna: true si se actualizo correctamente, false si fallo
 // ================================================
-async function update_subject(record_id, tema, enlace) {
+async function actualizarTema(tema_id, tema, enlace) {
 
     // Ejecuta el UPDATE usando el id como condicion WHERE
     // $1 = tema nuevo, $2 = enlace nuevo, $3 = id del registro a actualizar
     const result = await pool.query(
-        'UPDATE record SET tema=$1, enlace=$2 WHERE id=$3',
-        [tema, enlace, record_id]
+        'UPDATE tema SET tema=$1, enlace=$2 WHERE id=$3',
+        [tema, enlace, tema_id]
     );
 
     // Verifica si se actualizo al menos una fila
@@ -44,74 +42,68 @@ async function update_subject(record_id, tema, enlace) {
 }
 
 // ================================================
-// FUNCION: add_vote
-// Inserta una nueva fila en votes para el registro indicado
-// Cada fila en votes = 1 voto. Los votos se cuentan con COUNT()
-// Parametros: record_id (number)
+// FUNCION: agregarVoto
+// Inserta una nueva fila en votos para el registro indicado
+// Cada fila en votos = 1 voto. Los votos se cuentan con COUNT()
+// Parametros: tema_id (number)
 // Retorna: true si se voto correctamente, false si fallo
 // ================================================
-async function add_vote(record_id) {
+async function agregarVoto(tema_id) {
 
-    // Inserta una fila nueva en votes apuntando al record_id
+    // Inserta una fila nueva en votos apuntando al tema_id
     const result = await pool.query(
-        'INSERT INTO votes (record_id) VALUES ($1)',
-        [record_id]
+        'INSERT INTO votos (tema_id) VALUES ($1)',
+        [tema_id]
     );
 
     return result.rowCount > 0;
 }
 
-// ================================================
-// FUNCION: remove_vote
-// Elimina UN voto del registro indicado
-// Usa ctid que es el identificador interno de fila en PostgreSQL
-// (en MySQL se usaba LIMIT 1, en PostgreSQL no existe LIMIT en DELETE)
-// Parametros: record_id (number)
-// Retorna: true si se elimino un voto, false si no habia votos
-// ================================================
-async function delete_record(record_id) {
+// FUNCION: eliminarTema
+// Elimina un tema del registro indicado
+// Parametros: tema_id (number)
+// Retorna: true si se elimino correctamente, false si fallo
+async function eliminarTema(tema_id) {
     const result = await pool.query(
-        'DELETE FROM record WHERE id=$1',
-        [record_id]
+        'DELETE FROM tema WHERE id=$1',
+        [tema_id]
     );
     return result.rowCount > 0;
 }
 
 // ================================================
-// FUNCION: display_data
+// FUNCION: obtenerDatos
 // Trae todos los registros con su conteo de votos
 // Ordena de mayor a menor por votos (los mas votados primero)
 // Retorna: array de objetos con { id, tema, enlace, votos }
 // ================================================
-async function display_data() {
+async function obtenerDatos() {
 
-    // JOIN une las dos tablas: record y votes
-    // LEFT JOIN significa: trae todos los records aunque no tengan votos
-    // COUNT(v.id) cuenta cuantas filas de votes existen para cada record
-    // GROUP BY agrupa los resultados por cada record para que COUNT funcione
+    // JOIN une las dos tablas: tema y votos
+    // LEFT JOIN significa: trae todos los temas aunque no tengan votos
+    // COUNT(v.id) cuenta cuantas filas de votos existen para cada tema
+    // GROUP BY agrupa los resultados por cada tema para que COUNT funcione
     // ORDER BY votos DESC ordena de mayor a menor
     const result = await pool.query(`
         SELECT
-            r.id,
-            r.tema,
-            r.enlace,
+            t.id,
+            t.tema,
+            t.enlace,
             COUNT(v.id) AS votos
-        FROM record r
-        LEFT JOIN votes v ON v.record_id = r.id
-        GROUP BY r.id, r.tema, r.enlace
+        FROM tema t
+        LEFT JOIN votos v ON v.tema_id = t.id
+        GROUP BY t.id, t.tema, t.enlace
         ORDER BY votos DESC
     `);
 
-    // .rows es el array de resultados en PostgreSQL
-    // En MySQL era el primer elemento del array desestructurado: const [rows] = ...
     return result.rows;
 }
 
 // Exporta todas las funciones para que el controlador pueda usarlas con require()
 module.exports = {
-    add_subject,
-    display_data,
-    update_subject,
-    add_vote,
-    delete_record
+    agregarTema,
+    obtenerDatos,
+    actualizarTema,
+    agregarVoto,
+    eliminarTema
 };

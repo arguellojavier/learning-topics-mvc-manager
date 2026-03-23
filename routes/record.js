@@ -8,24 +8,24 @@ const router = express.Router();
 const controller = require('../controller/recordController');
 
 // GET /records  → muestra la pagina con todos los registros
-// Llama a controller.showData que hace el SELECT y renderiza index.ejs
-router.get("/", controller.showData);
+// Llama a controller.mostrarDatos que hace el SELECT y renderiza index.ejs
+router.get("/", controller.mostrarDatos);
 
 // POST /records/add  → agrega un nuevo tema
-// Recibe { tema, link } en el body y llama a controller.addRecord
-router.post("/add", controller.addRecord);
+// Recibe { tema, link } en el body y llama a controller.agregarTema
+router.post("/add", controller.agregarTema);
 
 // POST /records/vote  → agrega un voto (+1)
-// Recibe { record_id } en el body y llama a controller.addVote
-router.post("/vote", controller.addVote);
+// Recibe { tema_id } en el body y llama a controller.agregarVoto
+router.post("/vote", controller.agregarVoto);
 
-// DELETE /records/unVote  → quita un voto (-1)
-// Recibe { record_id } en el body y llama a controller.removeVote
-router.delete("/delete", controller.deleteRecord)
+// DELETE /records/delete  → elimina un tema
+// Recibe { tema_id } en el body y llama a controller.eliminarTema
+router.delete("/delete", controller.eliminarTema)
 
 // PUT /records/update  → actualiza un registro existente
-// Recibe { record_id, tema, link } en el body y llama a controller.updateRecord
-router.put("/update", controller.updateRecord);
+// Recibe { tema_id, tema, link } en el body y llama a controller.actualizarTema
+router.put("/update", controller.actualizarTema);
 
 // Exporta el router para que server.js pueda usarlo con app.use()
 module.exports = router;

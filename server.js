@@ -7,6 +7,7 @@ require('dotenv').config();
 const express = require('express');
 
 // Importa path para construir rutas de carpetas de forma segura
+//sin errores de rutas o sistemas operativos
 const path = require('path');
 
 // Crea la aplicacion servidor
@@ -46,7 +47,7 @@ const recordRoutes = require('./routes/record');
 // Ejemplo: router.get('/') se convierte en GET /records
 // Ejemplo: router.post('/add') se convierte en POST /records/add
 app.use('/records', recordRoutes);
-
+//solicitud respuesta
 // Ruta principal: cuando alguien entra a '/' lo redirige a /records
 app.get('/', (req, res) => {
     res.redirect('/records');

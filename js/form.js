@@ -36,7 +36,6 @@ data.addEventListener("submit", async (e) => {
 // ------------------------------------------------
 // SECCION 2: EDITAR TEMA EXISTENTE
 // Selecciona todos los botones con clase .btn-edit y les pone un listener
-// ------------------------------------------------
 
 // querySelectorAll devuelve TODOS los elementos con esa clase (como una lista)
 // Hay un boton .btn-edit por cada fila de la tabla
@@ -49,7 +48,7 @@ const updateData = document.querySelectorAll(".btn-edit");
 updateData.forEach((button) => {
   button.addEventListener("click", async () => {
 
-    const record_id = button.getAttribute("data-id");
+    const tema_id = button.getAttribute("data-id");
 
     // Sube por el DOM hasta encontrar la fila <tr> del boton clickeado
     // Así podemos leer los valores actuales de esa fila
@@ -63,6 +62,7 @@ updateData.forEach((button) => {
 
     // Muestra el prompt con el valor actual precargado
     // Si el usuario no escribe nada y acepta, conserva el valor actual
+    //promt para pedir los nuevos datos
     const tema = prompt("Nuevo tema:", temaActual) ;
     const link = prompt("Nuevo link:", linkActual);
 
@@ -78,18 +78,14 @@ updateData.forEach((button) => {
     await fetch("/records/update", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ record_id, tema: temaFinal, link: linkFinal }),
+      body: JSON.stringify({ tema_id, tema: temaFinal, link: linkFinal }),
     });
 
     location.reload();
   });
 });
 
-// ------------------------------------------------
 // SECCION 3: AGREGAR VOTO (+1)
-// Escucha el click en los botones verdes "+1" de cada fila
-// ------------------------------------------------
-
 // Selecciona todos los botones con clase .btn-vote (uno por cada fila)
 const voteButtons = document.querySelectorAll(".btn-vote");
 
@@ -97,14 +93,14 @@ voteButtons.forEach((button) => {
   button.addEventListener("click", async () => {
 
     // Lee el id del registro desde el atributo data-id del boton clickeado
-    const record_id = button.getAttribute("data-id");
+    const tema_id = button.getAttribute("data-id");
 
-    // Manda POST /records/vote con el id del registro
-    // El servidor inserta una nueva fila en la tabla votes
+    // Manda POST /records/vote con el id del tema
+    // El servidor inserta una nueva fila en la tabla votos
     await fetch("/records/vote", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ record_id }),  // solo necesita el id
+      body: JSON.stringify({ tema_id }),  // solo necesita el id
     });
 
     // Recarga para ver el nuevo conteo y el nuevo orden de la tabla
@@ -112,20 +108,20 @@ voteButtons.forEach((button) => {
   });
 });
 
-// SECCION 4: QUITAR VOTO (-1)
-// Escucha el click en los botones rojos "-1" de cada fila
+// SECCION 4: ELIMINAR TEMA
+// Escucha el click en los botones rojos "Eliminar" de cada fila
 
 // Selecciona todos los botones con clase .btn-delete (uno por cada fila)
 const deleteButtons = document.querySelectorAll(".btn-delete");
 deleteButtons.forEach((button) => {
   button.addEventListener("click", async () => {
-    const record_id = button.getAttribute("data-id");
+    const tema_id = button.getAttribute("data-id");
 
 
     await fetch("/records/delete", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ record_id }),
+      body: JSON.stringify({ tema_id }),
     });
 
     location.reload();
