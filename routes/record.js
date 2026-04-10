@@ -31,6 +31,10 @@ router.post("/enlace/add", controller.agregarEnlace);
 // Recibe { enlace_id } en el body
 router.post("/enlace/vote", controller.agregarVotoEnlace);
 
+// PUT /records/enlace/update  → actualiza un enlace existente
+// Recibe { enlace_id, url } en el body
+router.put("/enlace/update", controller.actualizarEnlace);
+
 // DELETE /records/enlace/delete  → elimina un enlace
 // Recibe { enlace_id } en el body
 router.delete("/enlace/delete", controller.eliminarEnlace);

@@ -102,6 +102,17 @@ exports.agregarVotoEnlace = async (req, res) => {
 };
 
 // ================================================
+// CONTROLADOR: actualizarEnlace
+// Maneja PUT /records/enlace/update
+// Actualiza la URL de un enlace existente
+// ================================================
+exports.actualizarEnlace = async (req, res) => {
+    const { enlace_id, url } = req.body;
+    const ok = await db.actualizarEnlace(enlace_id, url);
+    res.json({ success: ok });
+};
+
+// ================================================
 // CONTROLADOR: eliminarEnlace
 // Maneja DELETE /records/enlace/delete
 // Elimina un enlace especifico

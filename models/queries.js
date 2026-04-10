@@ -100,6 +100,20 @@ async function agregarVotoEnlace(enlace_id) {
 }
 
 // ================================================
+// FUNCION: actualizarEnlace
+// Actualiza la URL de un enlace existente
+// Parametros: enlace_id (number), url (string)
+// Retorna: true si se actualizo correctamente, false si fallo
+// ================================================
+async function actualizarEnlace(enlace_id, url) {
+    const result = await pool.query(
+        'UPDATE enlace SET url=$1 WHERE id=$2',
+        [url, enlace_id]
+    );
+    return result.rowCount > 0;
+}
+
+// ================================================
 // FUNCION: eliminarEnlace
 // Elimina un enlace especifico
 // Parametros: enlace_id (number)
@@ -161,6 +175,7 @@ module.exports = {
     agregarVoto,
     eliminarTema,
     agregarEnlace,
+    actualizarEnlace,
     agregarVotoEnlace,
     eliminarEnlace
 };

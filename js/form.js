@@ -125,7 +125,35 @@ botonesVotarEnlace.forEach((boton) => {
 });
 
 // ================================================
-// SECCION 6: ELIMINAR UN ENLACE
+// SECCION 6: EDITAR UN ENLACE
+// ================================================
+
+const botonesEditarEnlace = document.querySelectorAll(".btn-editar-enlace");
+
+botonesEditarEnlace.forEach((boton) => {
+  boton.addEventListener("click", async () => {
+    const enlaceId = boton.getAttribute("data-enlace-id");
+    const elementoEnlace = boton.closest(".enlace-item");
+    const urlActual = elementoEnlace.querySelector(".enlace-url").href;
+
+    const nuevoUrl = prompt("Editar URL del enlace:", urlActual);
+
+    if (nuevoUrl === null || !nuevoUrl.trim()) {
+      return;
+    }
+
+    await fetch("/records/enlace/update", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ enlace_id: enlaceId, url: nuevoUrl.trim() }),
+    });
+
+    location.reload();
+  });
+});
+
+// ================================================
+// SECCION 7: ELIMINAR UN ENLACE
 // ================================================
 
 const botonesEliminarEnlace = document.querySelectorAll(".btn-eliminar-enlace");
