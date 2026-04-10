@@ -1,10 +1,15 @@
 # Entorno y Secretos
 .env
 
-# Dependencias de Node (pesan mucho y no se suben)
+# Dependencias de Node (NUNCA se suben)
 node_modules/
+package-lock.json
+# Archivos específicos que quieres fuera de GitHub
+livecoding.js
 
-# Archivos temporales de Windows o editores
+# Archivos temporales y de sistema
+package-lock.json
 .DS_Store
+Thumbs.db
 dist/
 build/
