@@ -72,31 +72,85 @@ async function eliminarTema(tema_id) {
 }
 
 // ================================================
+// FUNCION: agregarEnlace
+// Inserta un nuevo enlace para un tema existente
+// Parametros: tema_id (number), url (string)
+// Retorna: true si se inserto correctamente, false si fallo
+// ================================================
+async function agregarEnlace(tema_id, url) {
+    const result = await pool.query(
+        'INSERT INTO enlace (tema_id, url) VALUES ($1, $2)',
+        [tema_id, url]
+    );
+    return result.rowCount > 0;
+}
+
+// ================================================
+// FUNCION: agregarVotoEnlace
+// Inserta un voto para un enlace especifico
+// Parametros: enlace_id (number)
+// Retorna: true si se voto correctamente, false si fallo
+// ================================================
+async function agregarVotoEnlace(enlace_id) {
+    const result = await pool.query(
+        'INSERT INTO votos_enlace (enlace_id) VALUES ($1)',
+        [enlace_id]
+    );
+    return result.rowCount > 0;
+}
+
+// ================================================
+// FUNCION: eliminarEnlace
+// Elimina un enlace especifico
+// Parametros: enlace_id (number)
+// Retorna: true si se elimino correctamente, false si fallo
+// ================================================
+async function eliminarEnlace(enlace_id) {
+    const result = await pool.query(
+        'DELETE FROM enlace WHERE id=$1',
+        [enlace_id]
+    );
+    return result.rowCount > 0;
+}
+
+// ================================================
 // FUNCION: obtenerDatos
-// Trae todos los registros con su conteo de votos
-// Ordena de mayor a menor por votos (los mas votados primero)
-// Retorna: array de objetos con { id, tema, enlace, votos }
+// Trae todos los temas con sus enlaces y votos ordenados
+// Los enlaces dentro de cada tema se ordenan por votos (mayor a menor)
+// Retorna: array de temas con array de enlaces
 // ================================================
 async function obtenerDatos() {
 
-    // JOIN une las dos tablas: tema y votos
-    // LEFT JOIN significa: trae todos los temas aunque no tengan votos
-    // COUNT(v.id) cuenta cuantas filas de votos existen para cada tema
-    // GROUP BY agrupa los resultados por cada tema para que COUNT funcione
-    // ORDER BY votos DESC ordena de mayor a menor
-    const result = await pool.query(`
-        SELECT
-            t.id,
-            t.tema,
-            t.enlace,
-            COUNT(v.id) AS votos
-        FROM tema t
-        LEFT JOIN votos v ON v.tema_id = t.id
-        GROUP BY t.id, t.tema, t.enlace
-        ORDER BY votos DESC
+    // Primero obtiene todos los temas
+    const temas = await pool.query(`
+        SELECT id, tema
+        FROM tema
+        ORDER BY id DESC
     `);
 
-    return result.rows;
+    // Para cada tema, obtiene sus enlaces con el conteo de votos
+    const temasConEnlaces = await Promise.all(
+        temas.rows.map(async (tema) => {
+            const enlacesResult = await pool.query(`
+                SELECT
+                    e.id,
+                    e.url,
+                    COUNT(ve.id) AS votos
+                FROM enlace e
+                LEFT JOIN votos_enlace ve ON ve.enlace_id = e.id
+                WHERE e.tema_id = $1
+                GROUP BY e.id, e.url
+                ORDER BY votos DESC, e.id ASC
+            `, [tema.id]);
+
+            return {
+                ...tema,
+                enlaces: enlacesResult.rows
+            };
+        })
+    );
+
+    return temasConEnlaces;
 }
 
 // Exporta todas las funciones para que el controlador pueda usarlas con require()
@@ -105,5 +159,8 @@ module.exports = {
     obtenerDatos,
     actualizarTema,
     agregarVoto,
-    eliminarTema
+    eliminarTema,
+    agregarEnlace,
+    agregarVotoEnlace,
+    eliminarEnlace
 };

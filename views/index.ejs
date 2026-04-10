@@ -1,54 +1,170 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>CRUD</title>
+  <title>CRUD - Temas y Enlaces</title>
   <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .tema-contenedor {
+      background-color: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .titulo-tema {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 10px;
+    }
+
+    .enlaces-lista {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 15px;
+    }
+
+    .enlace-item {
+      background-color: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 3px;
+      padding: 10px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .enlace-info {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .votos-enlace {
+      background-color: #28a745;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      min-width: 40px;
+      text-align: center;
+    }
+
+    .enlace-url {
+      color: #007bff;
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    .acciones-enlace {
+      display: flex;
+      gap: 5px;
+    }
+
+    .formulario-enlace {
+      background-color: white;
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 3px;
+      display: flex;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+
+    .formulario-enlace input {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      font-size: 14px;
+    }
+
+    .sin-enlaces {
+      color: #999;
+      font-style: italic;
+      padding: 10px;
+      text-align: center;
+      background-color: white;
+      border: 1px dashed #ccc;
+      border-radius: 3px;
+    }
+
+    .acciones-tema {
+      display: flex;
+      gap: 5px;
+    }
+  </style>
 </head>
 <body>
 
   <div class="contenedor">
 
-    <form id="user-data" class="formulario">
+    <form id="formulario-tema" class="formulario">
       <div class="campo">
         <label>Tema</label>
-        <input type="text" id="subject" required>
+        <input type="text" id="entrada-tema" required>
       </div>
       <div class="campo">
-        <label>Link</label>
-        <input type="text" id="url" required>
+        <label>Primer Enlace (opcional)</label>
+        <input type="text" id="entrada-enlace" placeholder="https://ejemplo.com">
       </div>
       <button type="submit" class="btn btn-azul">Añadir Tema</button>
     </form>
 
     <div class="tabla-contenedor">
-      <table>
-        <thead>
-          <tr>
-            <th>Votos</th>
-            <th>Tema</th>
-            <th>Enlace</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% records.forEach(function(record) { %>
-          <tr>
-            <td>
-              <span class="badge-votos"><%= record.votos %></span>
-            </td>
-            <td><%= record.tema %></td>
-            <td>
-              <a href="<%= record.enlace %>" target="_blank"><%= record.enlace %></a>
-            </td>
-            <td class="acciones">
-              <button class="btn-vote btn btn-verde" data-id="<%= record.id %>">+1</button>
-              <button class="btn-delete btn btn-rojo" data-id="<%= record.id %>">Eliminar</button>
-              <button class="btn-edit btn btn-azul" data-id="<%= record.id %>">Editar</button>
-            </td>
-          </tr>
-          <% }) %>
-        </tbody>
-      </table>
+      <% if (records.length === 0) { %>
+        <p style="text-align: center; color: #999;">No hay temas registrados. ¡Agrega uno!</p>
+      <% } else { %>
+        <% records.forEach(function(registro) { %>
+          <div class="tema-contenedor">
+            <div class="titulo-tema">
+              <%= registro.tema %>
+              <div class="acciones-tema" style="float: right;">
+                <button class="btn-editar-tema btn btn-azul" data-id="<%= registro.id %>">Editar</button>
+                <button class="btn-eliminar-tema btn btn-rojo" data-id="<%= registro.id %>">Eliminar</button>
+              </div>
+            </div>
+
+            <!-- Formulario para agregar enlace -->
+            <div class="formulario-enlace">
+              <input type="text" 
+                     class="entrada-nuevo-enlace" 
+                     data-tema-id="<%= registro.id %>" 
+                     placeholder="Ingresa la URL del nuevo enlace..."
+                     style="flex: 1;">
+              <button type="button" 
+                      class="btn-agregar-enlace btn btn-verde" 
+                      data-tema-id="<%= registro.id %>">Agregar Enlace</button>
+            </div>
+
+            <!-- Lista de enlaces -->
+            <% if (registro.enlaces && registro.enlaces.length > 0) { %>
+              <ul class="enlaces-lista">
+                <% registro.enlaces.forEach(function(enlace) { %>
+                  <li class="enlace-item">
+                    <div class="enlace-info">
+                      <span class="votos-enlace"><%= enlace.votos %></span>
+                      <a href="<%= enlace.url %>" target="_blank" class="enlace-url">
+                        <%= enlace.url %>
+                      </a>
+                    </div>
+                    <div class="acciones-enlace">
+                      <button class="btn-votar-enlace btn btn-verde" data-enlace-id="<%= enlace.id %>">+1</button>
+                      <button class="btn-eliminar-enlace btn btn-rojo" data-enlace-id="<%= enlace.id %>">Eliminar</button>
+                    </div>
+                  </li>
+                <% }) %>
+              </ul>
+            <% } else { %>
+              <div class="sin-enlaces">Sin enlaces agregados. ¡Agrega uno!</div>
+            <% } %>
+          </div>
+        <% }) %>
+      <% } %>
     </div>
 
   </div>

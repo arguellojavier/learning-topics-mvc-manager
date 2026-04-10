@@ -23,6 +23,18 @@ router.post("/vote", controller.agregarVoto);
 // Recibe { tema_id } en el body y llama a controller.eliminarTema
 router.delete("/delete", controller.eliminarTema)
 
+// POST /records/enlace/add  → agrega un nuevo enlace a un tema
+// Recibe { tema_id, url } en el body
+router.post("/enlace/add", controller.agregarEnlace);
+
+// POST /records/enlace/vote  → agrega un voto a un enlace especifico
+// Recibe { enlace_id } en el body
+router.post("/enlace/vote", controller.agregarVotoEnlace);
+
+// DELETE /records/enlace/delete  → elimina un enlace
+// Recibe { enlace_id } en el body
+router.delete("/enlace/delete", controller.eliminarEnlace);
+
 // PUT /records/update  → actualiza un registro existente
 // Recibe { tema_id, tema, link } en el body y llama a controller.actualizarTema
 router.put("/update", controller.actualizarTema);

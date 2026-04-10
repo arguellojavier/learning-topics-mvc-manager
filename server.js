@@ -53,9 +53,8 @@ app.get('/', (req, res) => {
     res.redirect('/records');
 });
 
-// ================================================
+
 // INICIO DEL SERVIDOR
-// ================================================
 
 // Lee el puerto del archivo .env, o usa 5000 si no esta definido
 const PORT = process.env.PORT || 5000;

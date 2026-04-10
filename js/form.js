@@ -2,128 +2,146 @@
 // Se encarga de capturar eventos del usuario y comunicarse
 // con el servidor usando fetch() sin recargar la pagina
 
+// ================================================
 // SECCION 1: AGREGAR NUEVO TEMA
-// Escucha el submit del formulario y manda los datos al servidor
+// ================================================
 
-// Selecciona el formulario por su id="user-data" definido en index.ejs
-const data = document.getElementById("user-data");
+const formularioTema = document.getElementById("formulario-tema");
 
-// Registra una funcion que se ejecuta cuando el usuario hace click en "Anadir Tema"
-data.addEventListener("submit", async (e) => {
-
-  // Evita que el formulario recargue la pagina (comportamiento por defecto de HTML)
+formularioTema.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  // Lee el valor escrito en el input id="subject" del formulario
-  const tema = document.getElementById("subject").value;
+  const tema = document.getElementById("entrada-tema").value;
+  const enlace = document.getElementById("entrada-enlace").value;
 
-  // Lee el valor escrito en el input id="url" del formulario
-  const link = document.getElementById("url").value;
-
-  // fetch() hace una peticion HTTP al servidor, igual que requests.post() en Python
-  // Manda los datos como JSON al endpoint POST /records/add
   await fetch("/records/add", {
-    method: "POST",                                    // tipo de peticion HTTP
-    headers: { "Content-Type": "application/json" },  // le dice al servidor que manda JSON
-    body: JSON.stringify({ tema, link }),              // convierte el objeto a texto JSON
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ tema, link: enlace }),
   });
 
-  // Recarga la pagina para mostrar el nuevo registro en la tabla
-  // El servidor vuelve a hacer SELECT y renderiza la vista actualizada
   location.reload();
 });
 
-// ------------------------------------------------
+// ================================================
 // SECCION 2: EDITAR TEMA EXISTENTE
-// Selecciona todos los botones con clase .btn-edit y les pone un listener
+// ================================================
 
-// querySelectorAll devuelve TODOS los elementos con esa clase (como una lista)
-// Hay un boton .btn-edit por cada fila de la tabla
-// ------------------------------------------------
-// SECCION 2: EDITAR TEMA EXISTENTE
-// ------------------------------------------------
+const botonesEditarTema = document.querySelectorAll(".btn-editar-tema");
 
-const updateData = document.querySelectorAll(".btn-edit");
+botonesEditarTema.forEach((boton) => {
+  boton.addEventListener("click", async () => {
+    const temaId = boton.getAttribute("data-id");
+    const contenedorTema = boton.closest(".tema-contenedor");
+    const temaActual = contenedorTema.querySelector(".titulo-tema").textContent.trim();
 
-updateData.forEach((button) => {
-  button.addEventListener("click", async () => {
+    const nuevoTema = prompt("Editar tema:", temaActual);
 
-    const tema_id = button.getAttribute("data-id");
-
-    // Sube por el DOM hasta encontrar la fila <tr> del boton clickeado
-    // Así podemos leer los valores actuales de esa fila
-    const fila = button.closest("tr");
-
-    // Lee el texto actual de la celda de tema (columna 2, indice 1)
-    const temaActual = fila.cells[1].textContent;
-
-    // Lee el texto actual de la celda de enlace (columna 3, indice 2)
-    const linkActual = fila.cells[2].querySelector("a").href;
-
-    // Muestra el prompt con el valor actual precargado
-    // Si el usuario no escribe nada y acepta, conserva el valor actual
-    //promt para pedir los nuevos datos
-    const tema = prompt("Nuevo tema:", temaActual) ;
-    const link = prompt("Nuevo link:", linkActual);
-
-    // Si el usuario cancela el prompt devuelve null, en ese caso no hace nada
-    if (tema === null || link === null) {
+    if (nuevoTema === null || !nuevoTema.trim()) {
       return;
     }
-
-    // Si dejo vacio usa el valor actual, si escribio algo usa el nuevo
-    const temaFinal = tema.trim() || temaActual;
-    const linkFinal = link.trim() || linkActual;
 
     await fetch("/records/update", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ tema_id, tema: temaFinal, link: linkFinal }),
+      body: JSON.stringify({ tema_id: temaId, tema: nuevoTema.trim(), link: "" }),
     });
 
     location.reload();
   });
 });
 
-// SECCION 3: AGREGAR VOTO (+1)
-// Selecciona todos los botones con clase .btn-vote (uno por cada fila)
-const voteButtons = document.querySelectorAll(".btn-vote");
+// ================================================
+// SECCION 3: ELIMINAR TEMA
+// ================================================
 
-voteButtons.forEach((button) => {
-  button.addEventListener("click", async () => {
+const botonesEliminarTema = document.querySelectorAll(".btn-eliminar-tema");
 
-    // Lee el id del registro desde el atributo data-id del boton clickeado
-    const tema_id = button.getAttribute("data-id");
+botonesEliminarTema.forEach((boton) => {
+  boton.addEventListener("click", async () => {
+    const temaId = boton.getAttribute("data-id");
 
-    // Manda POST /records/vote con el id del tema
-    // El servidor inserta una nueva fila en la tabla votos
-    await fetch("/records/vote", {
+    if (confirm("¿Eliminar este tema y todos sus enlaces?")) {
+      await fetch("/records/delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tema_id: temaId }),
+      });
+
+      location.reload();
+    }
+  });
+});
+
+// ================================================
+// SECCION 4: AGREGAR NUEVO ENLACE A UN TEMA
+// ================================================
+
+const botonesAgregarEnlace = document.querySelectorAll(".btn-agregar-enlace");
+
+botonesAgregarEnlace.forEach((boton) => {
+  boton.addEventListener("click", async () => {
+    const temaId = boton.getAttribute("data-tema-id");
+    const inputEnlace = boton.previousElementSibling;
+    const url = inputEnlace.value.trim();
+
+    if (!url) {
+      alert("Por favor ingresa una URL valida");
+      return;
+    }
+
+    const resultado = await fetch("/records/enlace/add", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ tema_id }),  // solo necesita el id
+      body: JSON.stringify({ tema_id: temaId, url }),
     });
 
-    // Recarga para ver el nuevo conteo y el nuevo orden de la tabla
+    const datos = await resultado.json();
+    if (datos.success) {
+      inputEnlace.value = "";
+      location.reload();
+    }
+  });
+});
+
+// ================================================
+// SECCION 5: VOTAR POR UN ENLACE
+// ================================================
+
+const botonesVotarEnlace = document.querySelectorAll(".btn-votar-enlace");
+
+botonesVotarEnlace.forEach((boton) => {
+  boton.addEventListener("click", async () => {
+    const enlaceId = boton.getAttribute("data-enlace-id");
+
+    await fetch("/records/enlace/vote", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ enlace_id: enlaceId }),
+    });
+
     location.reload();
   });
 });
 
-// SECCION 4: ELIMINAR TEMA
-// Escucha el click en los botones rojos "Eliminar" de cada fila
+// ================================================
+// SECCION 6: ELIMINAR UN ENLACE
+// ================================================
 
-// Selecciona todos los botones con clase .btn-delete (uno por cada fila)
-const deleteButtons = document.querySelectorAll(".btn-delete");
-deleteButtons.forEach((button) => {
-  button.addEventListener("click", async () => {
-    const tema_id = button.getAttribute("data-id");
+const botonesEliminarEnlace = document.querySelectorAll(".btn-eliminar-enlace");
 
+botonesEliminarEnlace.forEach((boton) => {
+  boton.addEventListener("click", async () => {
+    const enlaceId = boton.getAttribute("data-enlace-id");
 
-    await fetch("/records/delete", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ tema_id }),
-    });
+    if (confirm("¿Eliminar este enlace?")) {
+      await fetch("/records/enlace/delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ enlace_id: enlaceId }),
+      });
 
-    location.reload();
+      location.reload();
+    }
   });
 });

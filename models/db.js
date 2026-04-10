@@ -3,7 +3,6 @@
 require('dotenv').config();
 
 // Importa el driver de PostgreSQL
-// 'pg' es el equivalente de psycopg2 en Python
 const { Pool } = require('pg');
 
 // Crea un pool de conexiones a PostgreSQL

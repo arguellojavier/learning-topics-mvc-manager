@@ -6,7 +6,7 @@ const db = require('../models/queries');
 // CONTROLADOR: mostrarDatos
 // Maneja GET /records
 // Pide todos los registros al modelo y los manda a la vista index.ejs
-// ================================================
+// solicitud respuesta
 exports.mostrarDatos = async (req, res) => {
 
     // Llama a la funcion del modelo que hace el SELECT con JOIN
@@ -23,7 +23,7 @@ exports.mostrarDatos = async (req, res) => {
 // CONTROLADOR: agregarTema
 // Maneja POST /records/add
 // Recibe tema y link del body y los inserta en la BD
-// ================================================
+//solicitud respuesta
 exports.agregarTema = async (req, res) => {
 
     // req.body contiene los datos enviados desde el formulario en form.js
@@ -76,5 +76,38 @@ exports.agregarVoto = async (req, res) => {
 exports.eliminarTema = async (req, res) => {
     const { tema_id } = req.body;
     const ok = await db.eliminarTema(tema_id);
+    res.json({ success: ok });
+};
+
+// ================================================
+// CONTROLADOR: agregarEnlace
+// Maneja POST /records/enlace/add
+// Agrega un nuevo enlace a un tema existente
+// ================================================
+exports.agregarEnlace = async (req, res) => {
+    const { tema_id, url } = req.body;
+    const ok = await db.agregarEnlace(tema_id, url);
+    res.json({ success: ok });
+};
+
+// ================================================
+// CONTROLADOR: agregarVotoEnlace
+// Maneja POST /records/enlace/vote
+// Agrega un voto para un enlace especifico
+// ================================================
+exports.agregarVotoEnlace = async (req, res) => {
+    const { enlace_id } = req.body;
+    const ok = await db.agregarVotoEnlace(enlace_id);
+    res.json({ success: ok });
+};
+
+// ================================================
+// CONTROLADOR: eliminarEnlace
+// Maneja DELETE /records/enlace/delete
+// Elimina un enlace especifico
+// ================================================
+exports.eliminarEnlace = async (req, res) => {
+    const { enlace_id } = req.body;
+    const ok = await db.eliminarEnlace(enlace_id);
     res.json({ success: ok });
 };
