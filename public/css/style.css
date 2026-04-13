@@ -108,3 +108,10 @@ tr:hover {
   justify-content: flex-end;
   gap: 0.5rem;
 }
+/* Evita que los enlaces largos rompan el diseño */
+table td a {
+    word-break: break-all; /* Rompe la palabra en cualquier letra si es necesario */
+    overflow-wrap: break-word; /* Asegura que el texto largo se ajuste al contenedor */
+    display: inline-block; /* Ayuda a que las propiedades de envoltura funcionen mejor */
+    max-width: 100%; /* No permite que sea más ancho que su celda */
+}
