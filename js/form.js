@@ -33,7 +33,12 @@ botonesEditarTema.forEach((boton) => {
   boton.addEventListener("click", async () => {
     const temaId = boton.getAttribute("data-id");
     const contenedorTema = boton.closest(".tema-contenedor");
-    const temaActual = contenedorTema.querySelector(".titulo-tema").textContent.trim();
+    const titulElement = contenedorTema.querySelector(".titulo-tema");
+    const temaActual = Array.from(titulElement.childNodes)
+      .filter(node => node.nodeType === 3)
+      .map(node => node.textContent)
+      .join("")
+      .trim();
 
     const nuevoTema = prompt("Editar tema:", temaActual);
 
