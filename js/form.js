@@ -56,7 +56,7 @@ botonesEditarTema.forEach((boton) => {
 // ================================================
 
 const botonesEliminarTema = document.querySelectorAll(".btn-eliminar-tema");
-
+//fecht sirve para enviar o leer datos 
 botonesEliminarTema.forEach((boton) => {
   boton.addEventListener("click", async () => {
     const temaId = boton.getAttribute("data-id");
@@ -74,7 +74,27 @@ botonesEliminarTema.forEach((boton) => {
 });
 
 // ================================================
-// SECCION 4: AGREGAR NUEVO ENLACE A UN TEMA
+// SECCION 4: VOTAR POR UN TEMA
+// ================================================
+
+const botonesVotarTema = document.querySelectorAll(".btn-votar-tema");
+
+botonesVotarTema.forEach((boton) => {
+  boton.addEventListener("click", async () => {
+    const idTema = boton.getAttribute("data-tema-id");
+
+    await fetch("/records/vote", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tema_id: idTema }),
+    });
+
+    location.reload();
+  });
+});
+
+// ================================================
+// SECCION 5: AGREGAR NUEVO ENLACE A UN TEMA
 // ================================================
 
 const botonesAgregarEnlace = document.querySelectorAll(".btn-agregar-enlace");
@@ -105,7 +125,7 @@ botonesAgregarEnlace.forEach((boton) => {
 });
 
 // ================================================
-// SECCION 5: VOTAR POR UN ENLACE
+// SECCION 6: VOTAR POR UN ENLACE
 // ================================================
 
 const botonesVotarEnlace = document.querySelectorAll(".btn-votar-enlace");
@@ -125,7 +145,7 @@ botonesVotarEnlace.forEach((boton) => {
 });
 
 // ================================================
-// SECCION 6: EDITAR UN ENLACE
+// SECCION 7: EDITAR UN ENLACE
 // ================================================
 
 const botonesEditarEnlace = document.querySelectorAll(".btn-editar-enlace");
@@ -153,7 +173,7 @@ botonesEditarEnlace.forEach((boton) => {
 });
 
 // ================================================
-// SECCION 7: ELIMINAR UN ENLACE
+// SECCION 8: ELIMINAR UN ENLACE
 // ================================================
 
 const botonesEliminarEnlace = document.querySelectorAll(".btn-eliminar-enlace");

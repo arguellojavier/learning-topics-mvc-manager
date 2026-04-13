@@ -124,3 +124,65 @@ th {
 
 /* Clases de compatibilidad para el CRUD */
 .tema-contenedor { margin-bottom: 2rem; }
+
+/* Encabezado del tema: título y acciones */
+.contenedor-titulo-tema {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.titulo-tema {
+  font-size: 1.25rem;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.acciones-tema {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Sección de agregar enlace */
+.seccion-agregar-enlace {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.entrada-nuevo-enlace {
+  flex: 1;
+  padding: 0.6rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+/* Mensaje cuando no hay enlaces */
+.sin-enlaces {
+  text-align: center;
+  color: #64748b;
+  padding: 15px;
+  border: 1px dashed #e2e8f0;
+  border-radius: 8px;
+}
+
+/* Mensaje cuando no hay temas */
+.sin-temas {
+  text-align: center;
+  color: #999;
+  margin-top: 20px;
+}
+
+/* Votos del tema */
+.badge-votos-tema {
+  background-color: #e0e7ff;
+  color: #4338ca;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-block;
+  margin-left: 0.5rem;
+}

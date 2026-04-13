@@ -3,7 +3,6 @@
 require('dotenv').config();
 
 // Importa Express, el framework que crea el servidor web
-// Es el equivalente de Flask en Python
 const express = require('express');
 
 // Importa path para construir rutas de carpetas de forma segura
@@ -13,7 +12,7 @@ const path = require('path');
 // Crea la aplicacion servidor
 const app = express();
 
-
+//set definir configuracion del sistema, decirle a express
 // Le dice a Express que use EJS para renderizar las vistas
 // EJS busca archivos .ejs en la carpeta 'views' por defecto
 app.set('view engine', 'ejs');

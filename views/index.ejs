@@ -25,27 +25,30 @@
 
     <div class="tabla-contenedor">
       <% if (records.length === 0) { %>
-        <p style="text-align: center; color: #999; margin-top: 20px;">No hay temas registrados.</p>
+        <p class="sin-temas">No hay temas registrados.</p>
       <% } else { %>
         <% records.forEach(function(registro) { %>
-          
+
           <div class="tema-contenedor card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-              <h2 style="font-size: 1.25rem;"><%= registro.tema %></h2>
+            <div class="contenedor-titulo-tema">
+              <h2 class="titulo-tema">
+                <%= registro.tema %>
+                <span class="badge-votos-tema"><%= registro.votos %></span>
+              </h2>
               <div class="acciones-tema">
+                <button class="btn-votar-tema btn btn-verde" data-tema-id="<%= registro.id %>">+1</button>
                 <button class="btn-editar-tema btn btn-azul" data-id="<%= registro.id %>">Editar</button>
                 <button class="btn-eliminar-tema btn btn-rojo" data-id="<%= registro.id %>">Eliminar</button>
               </div>
             </div>
 
-            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-              <input type="text" 
-                     class="entrada-nuevo-enlace" 
-                     data-tema-id="<%= registro.id %>" 
-                     placeholder="Ingresa la URL del nuevo enlace..."
-                     style="flex: 1; padding: 0.6rem; border: 1px solid #e2e8f0; border-radius: 8px;">
-              <button type="button" 
-                      class="btn-agregar-enlace btn btn-verde" 
+            <div class="seccion-agregar-enlace">
+              <input type="text"
+                     class="entrada-nuevo-enlace"
+                     data-tema-id="<%= registro.id %>"
+                     placeholder="Ingresa la URL del nuevo enlace...">
+              <button type="button"
+                      class="btn-agregar-enlace btn btn-verde"
                       data-tema-id="<%= registro.id %>">Agregar</button>
             </div>
 
@@ -79,7 +82,7 @@
                 </tbody>
               </table>
             <% } else { %>
-              <div style="text-align: center; color: #64748b; padding: 15px; border: 1px dashed #e2e8f0; border-radius: 8px;">
+              <div class="sin-enlaces">
                 Sin enlaces agregados.
               </div>
             <% } %>

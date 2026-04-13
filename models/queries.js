@@ -7,19 +7,19 @@ const pool = require('./db');
 // Inserta un nuevo tema con su enlace en la tabla tema
 // Parametros: tema (string), enlace (string)
 // Retorna: true si se inserto correctamente, false si fallo
-async function agregarTema(tema, enlace) {
+async function insertarTema(nombreTema, enlace) {
 
     // Ejecuta el INSERT en la tabla tema
     // $1 y $2 son parametros seguros que evitan SQL injection
     // En MySQL se usan '?' pero en PostgreSQL se usan '$1', '$2', etc.
-    const result = await pool.query(
+    const resultadoInsert = await pool.query(
         'INSERT INTO tema (tema, enlace) VALUES ($1, $2)',
-        [tema, enlace]
+        [nombreTema, enlace]
     );
 
     // rowCount es el numero de filas afectadas por el INSERT
     // Si es mayor a 0 significa que se inserto correctamente
-    return result.rowCount > 0;
+    return resultadoInsert.rowCount > 0;
 }
 
 // ================================================
@@ -28,17 +28,17 @@ async function agregarTema(tema, enlace) {
 // Parametros: tema_id (number), tema (string), enlace (string)
 // Retorna: true si se actualizo correctamente, false si fallo
 // ================================================
-async function actualizarTema(tema_id, tema, enlace) {
+async function modificarTema(idTema, nombreTema, enlace) {
 
     // Ejecuta el UPDATE usando el id como condicion WHERE
-    // $1 = tema nuevo, $2 = enlace nuevo, $3 = id del registro a actualizar
-    const result = await pool.query(
+    // $1 = nombreTema nuevo, $2 = enlace nuevo, $3 = id del registro a actualizar
+    const resultadoActual = await pool.query(
         'UPDATE tema SET tema=$1, enlace=$2 WHERE id=$3',
-        [tema, enlace, tema_id]
+        [nombreTema, enlace, idTema]
     );
 
     // Verifica si se actualizo al menos una fila
-    return result.rowCount > 0;
+    return resultadoActual.rowCount > 0;
 }
 
 // ================================================
@@ -48,27 +48,27 @@ async function actualizarTema(tema_id, tema, enlace) {
 // Parametros: tema_id (number)
 // Retorna: true si se voto correctamente, false si fallo
 // ================================================
-async function agregarVoto(tema_id) {
+async function insertarVotoTema(idTema) {
 
-    // Inserta una fila nueva en votos apuntando al tema_id
-    const result = await pool.query(
+    // Inserta una fila nueva en votos apuntando al idTema
+    const resultadoVoto = await pool.query(
         'INSERT INTO votos (tema_id) VALUES ($1)',
-        [tema_id]
+        [idTema]
     );
 
-    return result.rowCount > 0;
+    return resultadoVoto.rowCount > 0;
 }
 
-// FUNCION: eliminarTema
+// FUNCION: borrarTema
 // Elimina un tema del registro indicado
-// Parametros: tema_id (number)
+// Parametros: idTema (number)
 // Retorna: true si se elimino correctamente, false si fallo
-async function eliminarTema(tema_id) {
-    const result = await pool.query(
+async function borrarTema(idTema) {
+    const resultadoElim = await pool.query(
         'DELETE FROM tema WHERE id=$1',
-        [tema_id]
+        [idTema]
     );
-    return result.rowCount > 0;
+    return resultadoElim.rowCount > 0;
 }
 
 // ================================================
@@ -77,12 +77,12 @@ async function eliminarTema(tema_id) {
 // Parametros: tema_id (number), url (string)
 // Retorna: true si se inserto correctamente, false si fallo
 // ================================================
-async function agregarEnlace(tema_id, url) {
-    const result = await pool.query(
+async function insertarEnlace(idTema, urlEnlace) {
+    const resultadoInsertEnl = await pool.query(
         'INSERT INTO enlace (tema_id, url) VALUES ($1, $2)',
-        [tema_id, url]
+        [idTema, urlEnlace]
     );
-    return result.rowCount > 0;
+    return resultadoInsertEnl.rowCount > 0;
 }
 
 // ================================================
@@ -91,12 +91,12 @@ async function agregarEnlace(tema_id, url) {
 // Parametros: enlace_id (number)
 // Retorna: true si se voto correctamente, false si fallo
 // ================================================
-async function agregarVotoEnlace(enlace_id) {
-    const result = await pool.query(
+async function insertarVotoEnlace(idEnlace) {
+    const resultadoVotoEnl = await pool.query(
         'INSERT INTO votos_enlace (enlace_id) VALUES ($1)',
-        [enlace_id]
+        [idEnlace]
     );
-    return result.rowCount > 0;
+    return resultadoVotoEnl.rowCount > 0;
 }
 
 // ================================================
@@ -105,12 +105,12 @@ async function agregarVotoEnlace(enlace_id) {
 // Parametros: enlace_id (number), url (string)
 // Retorna: true si se actualizo correctamente, false si fallo
 // ================================================
-async function actualizarEnlace(enlace_id, url) {
-    const result = await pool.query(
+async function modificarEnlace(idEnlace, urlEnlace) {
+    const resultadoModEnl = await pool.query(
         'UPDATE enlace SET url=$1 WHERE id=$2',
-        [url, enlace_id]
+        [urlEnlace, idEnlace]
     );
-    return result.rowCount > 0;
+    return resultadoModEnl.rowCount > 0;
 }
 
 // ================================================
@@ -119,12 +119,12 @@ async function actualizarEnlace(enlace_id, url) {
 // Parametros: enlace_id (number)
 // Retorna: true si se elimino correctamente, false si fallo
 // ================================================
-async function eliminarEnlace(enlace_id) {
-    const result = await pool.query(
+async function borrarEnlace(idEnlace) {
+    const resultadoElimEnl = await pool.query(
         'DELETE FROM enlace WHERE id=$1',
-        [enlace_id]
+        [idEnlace]
     );
-    return result.rowCount > 0;
+    return resultadoElimEnl.rowCount > 0;
 }
 
 // ================================================
@@ -133,19 +133,24 @@ async function eliminarEnlace(enlace_id) {
 // Los enlaces dentro de cada tema se ordenan por votos (mayor a menor)
 // Retorna: array de temas con array de enlaces
 // ================================================
-async function obtenerDatos() {
+async function obtenerTodosLosDatos() {
 
-    // Primero obtiene todos los temas
-    const temas = await pool.query(`
-        SELECT id, tema
-        FROM tema
-        ORDER BY id DESC
+    // Primero obtiene todos los temas con el conteo de votos
+    const temasConsulta = await pool.query(`
+        SELECT
+            t.id,
+            t.tema,
+            COUNT(v.id) AS votos
+        FROM tema t
+        LEFT JOIN votos v ON v.tema_id = t.id
+        GROUP BY t.id, t.tema
+        ORDER BY votos DESC, t.id DESC
     `);
 
     // Para cada tema, obtiene sus enlaces con el conteo de votos
-    const temasConEnlaces = await Promise.all(
-        temas.rows.map(async (tema) => {
-            const enlacesResult = await pool.query(`
+    const temasConEnlacesYVotos = await Promise.all(
+        temasConsulta.rows.map(async (temaActual) => {
+            const enlacesConsulta = await pool.query(`
                 SELECT
                     e.id,
                     e.url,
@@ -155,27 +160,27 @@ async function obtenerDatos() {
                 WHERE e.tema_id = $1
                 GROUP BY e.id, e.url
                 ORDER BY votos DESC, e.id ASC
-            `, [tema.id]);
+            `, [temaActual.id]);
 
             return {
-                ...tema,
-                enlaces: enlacesResult.rows
+                ...temaActual,
+                enlaces: enlacesConsulta.rows
             };
         })
     );
 
-    return temasConEnlaces;
+    return temasConEnlacesYVotos;
 }
 
 // Exporta todas las funciones para que el controlador pueda usarlas con require()
 module.exports = {
-    agregarTema,
-    obtenerDatos,
-    actualizarTema,
-    agregarVoto,
-    eliminarTema,
-    agregarEnlace,
-    actualizarEnlace,
-    agregarVotoEnlace,
-    eliminarEnlace
+    insertarTema,
+    obtenerTodosLosDatos,
+    modificarTema,
+    insertarVotoTema,
+    borrarTema,
+    insertarEnlace,
+    modificarEnlace,
+    insertarVotoEnlace,
+    borrarEnlace
 };
