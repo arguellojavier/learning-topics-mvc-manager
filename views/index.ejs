@@ -10,7 +10,7 @@
   <div class="contenedor">
 
     <div class="card">
-      <form id="formulario-tema">
+      <form id="formulario-tema" class="formulario">
         <div class="campo">
           <label>Tema</label>
           <input type="text" id="entrada-tema" required placeholder="Nombre del tema">
@@ -25,24 +25,24 @@
 
     <div class="tabla-contenedor">
       <% if (records.length === 0) { %>
-        <p style="text-align: center; color: #999; margin-top: 20px;">No hay temas registrados. ¡Agrega uno!</p>
+        <p style="text-align: center; color: #999; margin-top: 20px;">No hay temas registrados.</p>
       <% } else { %>
         <% records.forEach(function(registro) { %>
           
-          <div class="card">
-            <div class="acciones">
-              <h3 style="flex: 1; margin: 0;"><%= registro.tema %></h3>
-              <button class="btn-editar-tema btn btn-azul" data-id="<%= registro.id %>">Editar</button>
-              <button class="btn-eliminar-tema btn btn-rojo" data-id="<%= registro.id %>">Eliminar</button>
+          <div class="tema-contenedor card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+              <h2 style="font-size: 1.25rem;"><%= registro.tema %></h2>
+              <div class="acciones-tema">
+                <button class="btn-editar-tema btn btn-azul" data-id="<%= registro.id %>">Editar</button>
+                <button class="btn-eliminar-tema btn btn-rojo" data-id="<%= registro.id %>">Eliminar</button>
+              </div>
             </div>
 
-            <hr style="margin: 15px 0; border: 0; border-top: 1px solid #f1f5f9;">
-
-            <div class="acciones" style="margin-bottom: 15px;">
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
               <input type="text" 
                      class="entrada-nuevo-enlace" 
                      data-tema-id="<%= registro.id %>" 
-                     placeholder="Nueva URL..."
+                     placeholder="Ingresa la URL del nuevo enlace..."
                      style="flex: 1; padding: 0.6rem; border: 1px solid #e2e8f0; border-radius: 8px;">
               <button type="button" 
                       class="btn-agregar-enlace btn btn-verde" 
@@ -55,21 +55,22 @@
                   <tr>
                     <th>Votos</th>
                     <th>Enlace</th>
-                    <th style="text-align: right;">Acciones</th>
+                    <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   <% registro.enlaces.forEach(function(enlace) { %>
-                    <tr>
-                      <td><span class="badge-votos"><%= enlace.votos %></span></td>
+                    <tr class="enlace-item">
+                      <td><span class="votos-enlace badge-votos"><%= enlace.votos %></span></td>
                       <td>
-                        <a href="<%= enlace.url %>" target="_blank" style="color: #6366f1; text-decoration: none;">
+                        <a href="<%= enlace.url %>" target="_blank" class="enlace-url">
                           <%= enlace.url %>
                         </a>
                       </td>
                       <td>
                         <div class="acciones">
                           <button class="btn-votar-enlace btn btn-verde" data-enlace-id="<%= enlace.id %>">+1</button>
+                          <button class="btn-editar-enlace btn btn-azul" data-enlace-id="<%= enlace.id %>">Editar</button>
                           <button class="btn-eliminar-enlace btn btn-rojo" data-enlace-id="<%= enlace.id %>">Eliminar</button>
                         </div>
                       </td>
@@ -78,16 +79,15 @@
                 </tbody>
               </table>
             <% } else { %>
-              <p style="color: #64748b; font-size: 0.9rem; font-style: italic; text-align: center;">
+              <div style="text-align: center; color: #64748b; padding: 15px; border: 1px dashed #e2e8f0; border-radius: 8px;">
                 Sin enlaces agregados.
-              </p>
+              </div>
             <% } %>
           </div>
 
         <% }) %>
       <% } %>
     </div>
-
   </div>
 
   <script src="/js/form.js"></script>

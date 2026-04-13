@@ -7,7 +7,7 @@
 
 body {
   font-family: 'Segoe UI', Roboto, sans-serif;
-  background-color: #f8fafc; /* Gris más suave */
+  background-color: #f8fafc;
   padding: 2rem;
   color: #1e293b;
 }
@@ -17,7 +17,7 @@ body {
   margin: 0 auto;
 }
 
-/* ---- COMPONENTES REUTILIZABLES (Simplificación) ---- */
+/* ---- COMPONENTES REUTILIZABLES ---- */
 .card {
   background: white;
   padding: 1.5rem;
@@ -48,7 +48,7 @@ body {
 
 .campo input:focus {
   outline: none;
-  border-color: #6366f1; /* Indigo */
+  border-color: #6366f1;
 }
 
 /* ---- BOTONES ---- */
@@ -70,10 +70,11 @@ body {
 .btn-verde { background-color: #10b981; }
 .btn-rojo  { background-color: #f43f5e; }
 
-/* ---- TABLA ---- */
+/* ---- TABLA MEJORADA ---- */
 table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed; /* Ayuda a controlar mejor los anchos */
 }
 
 th, td {
@@ -81,6 +82,11 @@ th, td {
   text-align: left;
   border-bottom: 1px solid #f1f5f9;
 }
+
+/* Anchos de columnas */
+th:nth-child(1), td:nth-child(1) { width: 80px; text-align: center; } /* Votos */
+th:nth-child(2), td:nth-child(2) { width: auto; }                    /* Enlace */
+th:nth-child(3), td:nth-child(3) { width: 220px; text-align: right; } /* Acciones */
 
 th {
   background-color: #f8fafc;
@@ -90,8 +96,14 @@ th {
   letter-spacing: 0.05em;
 }
 
-tr:hover {
-  background-color: #f1f5f9;
+/* Ajuste inteligente de enlaces */
+.enlace-url {
+  word-break: break-word; /* Rompe solo si es muy largo */
+  overflow-wrap: anywhere;
+  text-decoration: none;
+  color: #6366f1;
+  display: block;
+  max-width: 100%;
 }
 
 .badge-votos {
@@ -101,17 +113,14 @@ tr:hover {
   border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 600;
+  display: inline-block;
 }
 
 .acciones {
   display: flex;
-  justify-content: flex-end;
   gap: 0.5rem;
+  justify-content: flex-end;
 }
-/* Evita que los enlaces largos rompan el diseño */
-table td a {
-    word-break: break-all; /* Rompe la palabra en cualquier letra si es necesario */
-    overflow-wrap: break-word; /* Asegura que el texto largo se ajuste al contenedor */
-    display: inline-block; /* Ayuda a que las propiedades de envoltura funcionen mejor */
-    max-width: 100%; /* No permite que sea más ancho que su celda */
-}
+
+/* Clases de compatibilidad para el CRUD */
+.tema-contenedor { margin-bottom: 2rem; }
